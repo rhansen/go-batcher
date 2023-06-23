@@ -4,18 +4,6 @@
 // Package batcher collects values and dispatches them in batches for amortizing processing cost or
 // limiting processing concurrency.
 //
-// # Inputs and Outputs
-//
-// A [Batcher] can acquire new values in the following ways, which may be combined:
-//   - Call the [Batcher.Add] method.
-//   - Send values to a channel registered with the [Batcher.AddFrom] method.
-//
-// A Batcher can output batches in one of the following ways:
-//   - Call a user-supplied [BatchProcessor] function.
-//   - Send the batch to an output channel passed to [ToChan].
-//
-// # Configurable Behaviors
-//
 // By default, a new non-empty batch is dispatched immediately after a new value is received.
 // Exception: If the previous batch is still being processed, a new batch will be dispatched once
 // the previous batch has been processed. Thus, each batch typically has only one value, unless
@@ -23,7 +11,17 @@
 //
 // Options are availble to change the behavior to meet your requirements.
 //
-// ## Defer Thresholds
+// # Inputs and Outputs
+//
+// A [Batcher] can acquire new values in the following ways, which may be combined:
+//   - Call the [Batcher.Add] method.
+//   - Send values to a channel registered with the [Batcher.AddFrom] method.
+//
+// A Batcher can output batches in one of the following ways:
+//   - Call a [BatchProcessor] function passed to [New].
+//   - Send the batch to an output channel passed to [ToChan].
+//
+// # Defer Thresholds
 //
 // Defer thresholds are set via [Option]s returned from the WithDefer* family of functions. A new
 // batch is not dispatched until all defer thresholds are met, allowing more values to accumulate in
@@ -60,7 +58,7 @@
 //     effectively infinite (both soft and hard), meaning there is no limit to the number of
 //     in-flight values.
 //
-// ## Dispatch Constraints
+// # Dispatch Constraints
 //
 // Dispatch constraints are set via [Option]s returned from the WithConstrain* family of functions.
 // While defer thresholds control when batches should NOT be dispatched, dispatch constraints are
